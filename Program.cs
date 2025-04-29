@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using ParserUsersAsync.services;
 
 namespace ParserUsersAsync
@@ -6,10 +7,14 @@ namespace ParserUsersAsync
     {
         static async Task Main(string[] args)
         {
+            var services = new ServiceCollection();
+            services.AddHttpClient("JsonPlaceholder", client => { client.BaseAddress = new Uri("https://jsonplaceholder.typicode.com/"); });
+            services.AddSingleton<ParserService>();
+            var serviceProvider = services.BuildServiceProvider();
             try
             {
-                var parserService = new ParserService(new HttpClient());
-                var usersList = await parserService.GetUsersAsync("https://jsonplaceholder.typicode.com/users");
+                var parserService = serviceProvider.GetRequiredService<ParserService>();
+                var usersList = await parserService.GetUsersAsync("users");
                 var userAfterFilter = parserService.FilterUsersByCompanyNameAsync(usersList, "Crona");
                 await parserService.SaveResulToFileAsync(userAfterFilter);
                 Console.WriteLine("Выборка успешно сохранена");
