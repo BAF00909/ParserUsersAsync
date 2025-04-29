@@ -37,7 +37,7 @@ namespace ParserUsersAsync.services
             {
                 throw new ArgumentNullException(nameof(users));
             }
-            string pathToFile = Path.Combine(Directory.GetCurrentDirectory(), $"log-{DateTime.Now.Second.ToString()}.json");
+            string pathToFile = Path.Combine(Directory.GetCurrentDirectory(), $"log-{DateTime.Now.Millisecond.ToString()}.json");
             var optionsForSerializer = new JsonSerializerOptions { WriteIndented = true };
             var json = JsonSerializer.Serialize(users, optionsForSerializer);
             await File.WriteAllTextAsync(pathToFile, json);
